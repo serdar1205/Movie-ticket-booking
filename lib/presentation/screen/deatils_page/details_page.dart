@@ -3,14 +3,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:movies/data/models/ticket_order_model.dart';
 import 'package:movies/presentation/controller/app_contoller.dart';
 import 'package:movies/presentation/widgets/buttons/main_button.dart';
-import 'package:movies/presentation/widgets/k_textfield.dart';
 import 'package:movies/presentation/widgets/toasts/custom_toast.dart';
-import '../../../app.dart';
-import '../../../core/constants/colors/app_colors.dart';
 import '../../../core/constants/sizes/app_text_size.dart';
 import '../../../core/utilities/global_data.dart';
-import '../../../data/models/film_model.dart';
 import '../../../di.dart';
+import '../../widgets/buttons/back_button.dart';
+import '../../widgets/dialogs/order_ticket_dialog.dart';
 import '../splash_screen/splash.dart';
 import '../../controller/admin_controller.dart';
 import '../../widgets/models/main_card_model.dart';
@@ -19,9 +17,11 @@ import '../../widgets/pictures/pictures.dart';
 // ignore: must_be_immutable
 class DetailsPage extends StatefulWidget {
   final Function() onChange;
+
   DetailsPage({
     super.key,
-    required this.model, required this.onChange,
+    required this.model,
+    required this.onChange,
   });
 
   MainModel model;
@@ -35,9 +35,10 @@ class _DetailsPageState extends State<DetailsPage> {
   TextEditingController nameCtrl = TextEditingController();
   TextEditingController phoneNumberCtrl = TextEditingController();
   TextEditingController ticketCtrl = TextEditingController();
-  AdminController controller = locator<AdminController>();
+  AdminController adminController = locator<AdminController>();
+  AppController appController = locator<AppController>();
 
-  FToast? fToast =  FToast();
+  FToast? fToast = FToast();
   bool isLiked = false;
 
   int count = 0;
@@ -46,20 +47,11 @@ class _DetailsPageState extends State<DetailsPage> {
   void initState() {
     super.initState();
     setState(() {
-      count = widget.model.count??0;
-    });
-    controller.getById(widget.model.title!).then((filmData) {
-      if (filmData != null) {
-        print(filmData);
-      } else {
-        print('Film data not found');
-      }
-    }).catchError((error) {
-      print('Error fetching film data: $error');
+      count = widget.model.count ?? 0;
     });
 
     ///
-    locator<AppController>().isFavorite(widget.model.id!).then((value) {
+    appController.isFavorite(widget.model.id!).then((value) {
       setState(() {
         isLiked = value;
       });
@@ -79,7 +71,6 @@ class _DetailsPageState extends State<DetailsPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -107,49 +98,24 @@ class _DetailsPageState extends State<DetailsPage> {
                                     context: context),
                                 const SizedBox(height: 20),
                                 BigText(
-                                    'Baslanyan wagty: ${widget.model.startDate} : ${widget.model.startHour}',
+                                    'Baslanyan wagty: ${widget.model.startDate}  ${widget.model.startHour}',
                                     context: context),
                                 const SizedBox(height: 20),
-                                BigText('Bilet sany: $count',
-                                    context: context),
+                                BigText('Bilet sany: $count', context: context),
                               ],
                             ),
                           ),
                         ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          top: 12,
-                          left: 16,
-                          right: 16,
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            //controller.getAllFilms();
-                            Navigator.of(context).pop();
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: AppColors.whiteLikeColor,
-                            ),
-                            child: const Icon(
-                              Icons.arrow_back_ios_new_rounded,
-                              color: AppColors.textDarkColor,
-                              size: 20,
-                            ),
-                          ),
-                        ),
-                      ),
+                      const BackToButton(),
                     ],
                   ),
                 ),
               ),
               isAdmin
-                  ? SizedBox()
+                  ? const SizedBox()
                   : Padding(
-                      padding: EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: MainButton(
                         onPressed: () {
                           if (widget.model.count == 0) {
@@ -161,7 +127,7 @@ class _DetailsPageState extends State<DetailsPage> {
                         buttonTile: 'Biledi almak',
                         width: size.width - 40,
                       ),
-                    )
+                    ),
             ],
           ),
         ),
@@ -180,13 +146,12 @@ class _DetailsPageState extends State<DetailsPage> {
         ticketCount: tickets,
       );
       if (widget.model.count! >= tickets) {
-        locator<AppController>().addTicketToDb(ticketOrderModel);
-        locator<AppController>().updateTotalTickets(widget.model.id!, tickets);
+        appController.addTicketToDb(ticketOrderModel);
+        appController.updateTotalTickets(widget.model.id!, tickets);
         clearCtrl();
         _showToast("Bilet alyndy");
         if (isLiked) {
-          locator<AppController>()
-              .updateFavoriteTotalTickets(widget.model.id!, tickets);
+          appController.updateFavoriteTotalTickets(widget.model.id!, tickets);
         }
         setState(() {
           count = count - tickets;
@@ -209,92 +174,23 @@ class _DetailsPageState extends State<DetailsPage> {
 
   void _showDialog() {
     showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: Theme.of(context).cardColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        //backgroundColor: AppColors.cardColor3,
-        elevation: 8,
-        title: MediumText(
-          'Maglumat girizin',
-          context: context,
-        ),
-        content: Form(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              KTextField(
-                controller: nameCtrl,
-                isSubmitted: false,
-                keyboardType: TextInputType.name,
-                labelText: 'Adynyzy, familiyanyzy girizin',
-                validator: (val) {
-                  if (val == null || val.isEmpty) {
-                    return 'Doldurmaly';
-                  } else if (val.length < 3) {
-                    return '3 den kop bolmaly';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 10),
-              PhoneNumField(
-                phoneCtrl: phoneNumberCtrl,
-                isSubmitted: false,
-                label: 'Telefon nomerinizi girizin',
-              ),
-              const SizedBox(height: 10),
-              KTextField(
-                controller: ticketCtrl,
-                isSubmitted: false,
-                keyboardType: TextInputType.name,
-                labelText: 'Bilet sanyny girizin',
-                validator: (val) {
-                  if (val == null || val.isEmpty) {
-                    return 'Doldurmaly';
-                  }
-                  return null;
-                },
-              ),
-            ],
-          ),
-        ),
-        actions: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: MediumText(
-                  'Yza',
-                  context: context,
-                ),
-              ),
-              TextButton(
-                onPressed: getTicket,
-                child: MediumText(
-                  'Ugratmak',
-                  context: context,
-                ),
-              ),
-            ],
-          )
-        ],
-      ),
-    );
+        context: context,
+        barrierDismissible: false,
+        builder: (ctx) => TicketOrderDialogWidget(
+              nameCtrl: nameCtrl,
+              phoneNumberCtrl: phoneNumberCtrl,
+              ticketCtrl: ticketCtrl,
+              formKey: formKey,
+              getTicket: getTicket,
+            ));
   }
-
 
   void _showToast(String text) {
     Widget toast = ToastWidget(text: text);
-
     fToast!.showToast(
       child: toast,
       gravity: ToastGravity.BOTTOM,
       toastDuration: const Duration(seconds: 2),
     );
   }
-
 }

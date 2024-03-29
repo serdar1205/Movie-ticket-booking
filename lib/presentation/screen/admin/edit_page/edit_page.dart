@@ -12,8 +12,6 @@ import '../../../widgets/k_textfield.dart';
 
 class EditFilmPage extends StatefulWidget {
   EditFilmPage({super.key, required this.film, required this.onChange});
-
-  //final String title;
   FilmModel film;
   final Function() onChange;
 
@@ -43,8 +41,6 @@ class _EditFilmPageState extends State<EditFilmPage> {
     controller.getById(widget.film.title!).then((filmData) {
       if (filmData != null) {
         setState(() {
-          print(filmData.id);
-         // widget.film = filmData;
           titleCtrl.text = filmData.title!;
           descriptionCtrl.text = filmData.description!;
           countTCtrl.text = filmData.count.toString();
@@ -196,7 +192,6 @@ class _EditFilmPageState extends State<EditFilmPage> {
                               setState(() {
                                 var minut = widget.film.startHour;
                                 widget.film.startHour =  replaceSubstringAtIndex(minut!,0,value);
-                                // minut!.replaceFirst(minut[0],minut[2]);
                               });
                             },
                           ),
@@ -259,10 +254,7 @@ class _EditFilmPageState extends State<EditFilmPage> {
   }
 
   editFilmData() {
-
     controller.updateFilm(widget.film).then((_) {
-      print('Film data updated successfully');
-      print(widget.film);
       Navigator.of(context).pop();
       widget.onChange();
     }).catchError((error) {
@@ -287,15 +279,6 @@ class _EditFilmPageState extends State<EditFilmPage> {
             ),
     );
   }
-
-  // Widget _getMediaWidget() {
-  //   return SizedBox(
-  //       width: 200,
-  //       height: 300,
-  //       child: pickedImage != null
-  //           ? _imagePickedByUser(pickedImage)
-  //           : _imagePickedByUser(File(film!.image!)));
-  // }
 
   Widget _imagePickedByUser(File? image) {
     if (image != null && image.path.isNotEmpty) {
@@ -360,40 +343,4 @@ class _EditFilmPageState extends State<EditFilmPage> {
     //controller.setImage(File(image?.path ?? ""));
   }
 
-  _showToast(String text) {
-    Widget toast = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 15.0),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
-          // color: addCartToastColor,
-          boxShadow: const [
-            BoxShadow(
-                color: Color.fromRGBO(44, 218, 82, 0.2),
-                spreadRadius: 0,
-                blurRadius: 3,
-                offset: Offset(0, 0))
-          ]),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(
-            Icons.check_circle_outline,
-            // color: bgColor5,
-          ),
-          const SizedBox(
-            width: 15.0,
-          ),
-          Text(
-            text,
-          ),
-        ],
-      ),
-    );
-
-    fToast!.showToast(
-      child: toast,
-      gravity: ToastGravity.BOTTOM,
-      toastDuration: const Duration(seconds: 2),
-    );
-  }
 }

@@ -5,7 +5,6 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 class KTextField extends StatefulWidget {
   final TextEditingController controller;
   final TextInputType? keyboardType;
-  //final String? initialValue;
   final String? hintText;
   final String? prefixText;
   final String? labelText;
@@ -29,7 +28,6 @@ class KTextField extends StatefulWidget {
     super.key,
     required this.controller,
     this.keyboardType,
-  //  this.initialValue,
     this.hintText,
     this.prefixText,
     this.labelText,
@@ -66,15 +64,13 @@ class _KTextFieldState extends State<KTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      //contextMenuBuilder: kContextMenuBuilder,
       autofocus: widget.autofocus ?? false,
-    //  initialValue: widget.initialValue,
       autovalidateMode: widget.isSubmitted
           ? AutovalidateMode.always
           : AutovalidateMode.disabled,
       controller: widget.controller,
       keyboardType: widget.keyboardType,
-      textInputAction: TextInputAction.done,
+      textInputAction: TextInputAction.next,
       textCapitalization: widget.textCapitalization,
       inputFormatters: widget.formatter != null ? [widget.formatter!] : null,
       maxLength: widget.maxLength,
@@ -134,23 +130,15 @@ class _KTextFieldState extends State<KTextField> {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(9),
           borderSide: BorderSide.none,
-          // borderSide: BorderSide(
-          //   color: active
-          //       ? Theme.of(context).colorScheme.secondary
-          //       : Colors.transparent,
-          //   width: 2,
-          // ),
         ),
         errorMaxLines: 2,
         filled: true,
         prefixStyle: TextStyle(
           color: Theme.of(context).colorScheme.secondary,
           fontSize: 16,
-          // height: 1.0,
         ),
       ),
       style: const TextStyle(
-        //color: Theme.of(context).colorScheme.secondary,
         fontSize: 14,
       ),
     );
@@ -181,20 +169,6 @@ class PhoneNumField extends StatelessWidget {
       hintText: hint ?? 'XX XXXXXX',
       maxLength: 8,
       labelText: label ?? 'Telefon nomeriniz',
-
-      // onChange: (p0) {
-      //   if (p0.length == 2) {
-      //     int? num = int.tryParse(p0);
-
-      //     if (num != null && (num < 61 || num > 65)) {
-      //       showSnackMessage(
-      //           context, AppLocalizations.of(context)!.phoneSBeIn61to65);
-      //       phoneCtrl.text = phoneCtrl.text[0];
-      //       phoneCtrl.selection =
-      //           TextSelection.fromPosition(const TextPosition(offset: 1));
-      //     }
-      //   }
-      // },
       validator: (val) {
         if (val == null || val.isEmpty) {
           return '';
@@ -208,40 +182,7 @@ class PhoneNumField extends StatelessWidget {
         return null;
       },
 
-      // onChange: (p0) {
-      //   print('on change $p0');
-      // },
     );
   }
 }
-// Widget kContextMenuBuilder(
-//     BuildContext context, EditableTextState editableTextState) {
-//   return AdaptiveTextSelectionToolbar.editable(
-//     clipboardStatus: ClipboardStatus.pasteable,
-//     onPaste: () async {
-//       if (await Clipboard.hasStrings()) {
-//         final val = await Clipboard.getData('text/plain');
-//         if (val != null && val.text != null) {
-//           String text = val.text!;
-//           if (text.startsWith('+993')) {
-//             text = text.replaceFirst('+993', '');
-//           }
-//
-//           text = text.replaceAll(' ', '');
-//           if (val.text != text) {
-//             await Clipboard.setData(ClipboardData(text: text));
-//           }
-//         }
-//       }
-//       editableTextState.pasteText(SelectionChangedCause.toolbar);
-//     },
-//     onCopy: () =>
-//         editableTextState.copySelection(SelectionChangedCause.toolbar),
-//     onCut: () => editableTextState.cutSelection(SelectionChangedCause.toolbar),
-//     onLiveTextInput: null,
-//     onSelectAll: () =>
-//         editableTextState.selectAll(SelectionChangedCause.toolbar),
-//     anchors: editableTextState.contextMenuAnchors,
-//     //onLookUp: () {  }, onSearchWeb: () {  }, onShare: () {  },
-//   );
-// }
+

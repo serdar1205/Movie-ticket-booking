@@ -5,7 +5,6 @@ import 'package:movies/di.dart';
 import 'package:movies/presentation/controller/app_contoller.dart';
 import 'package:movies/presentation/screen/deatils_page/details_page.dart';
 import 'package:movies/presentation/widgets/pictures/pictures.dart';
-
 import '../../../core/constants/colors/app_colors.dart';
 import '../models/main_card_model.dart';
 

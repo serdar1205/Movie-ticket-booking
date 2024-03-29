@@ -7,9 +7,7 @@ import '../../../widgets/models/main_card_model.dart';
 import '../edit_page/edit_page.dart';
 
 class AddedFilmsPage extends StatefulWidget {
-  const AddedFilmsPage({
-    super.key,
-  });
+  const AddedFilmsPage({super.key});
 
   @override
   State<AddedFilmsPage> createState() => _AddedFilmsPageState();
@@ -29,7 +27,6 @@ class _AddedFilmsPageState extends State<AddedFilmsPage> {
     return ListenableBuilder(
       listenable: controller,
       builder: (context, child) {
-
         if (controller.films.isEmpty) {
           return Center(
             child: BigText(
@@ -38,7 +35,6 @@ class _AddedFilmsPageState extends State<AddedFilmsPage> {
             ),
           );
         }
-
         return ListView.builder(
           shrinkWrap: true,
           scrollDirection: Axis.vertical,
@@ -46,7 +42,8 @@ class _AddedFilmsPageState extends State<AddedFilmsPage> {
           itemBuilder: (BuildContext context, int index) {
             var data = controller.films[index];
             return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0,vertical: 5),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
@@ -64,19 +61,15 @@ class _AddedFilmsPageState extends State<AddedFilmsPage> {
                     controller.removeFilm(controller.films[index]);
                   },
                   onEdit: () {
-                    //controller.updateFilm(controller.films[index]);
-                    print(controller.films[index].id);
-                    print(controller.films[index].title);
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => EditFilmPage(
-                            //  title: controller.films[index].title!,
                               film: controller.films[index],
-                          onChange: (){
+                              onChange: () {
                                 controller.getAllFilms();
-                          },
+                              },
                             )));
                   },
-                  onChange: (){
+                  onChange: () {
                     controller.getAllFilms();
                   },
                 ),

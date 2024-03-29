@@ -7,6 +7,7 @@ import 'package:movies/presentation/widgets/toasts/custom_toast.dart';
 import '../../../controller/admin_controller.dart';
 import '../../../widgets/buttons/main_button.dart';
 import '../../../widgets/k_textfield.dart';
+import '../../../widgets/pictures/image_picker.dart';
 
 class AddFilmPage extends StatefulWidget {
   const AddFilmPage({super.key});
@@ -60,11 +61,14 @@ class _AddFilmPageState extends State<AddFilmPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const SizedBox(height: 20),
-                  GestureDetector(
-                      onTap: () {
-                        _showPicker(context);
-                      },
-                      child: _getMediaWidget()),
+                  ImagePickerWidget(
+                    onImageSelected: (File? image) {
+                      if (image != null) {
+                        controller.setImage(image);
+                      }
+                    },
+                    pickedImage: controller.pickedImage,
+                  ),
                   const SizedBox(height: 20),
                   KTextField(
                     controller: titleCtrl,
@@ -115,8 +119,7 @@ class _AddFilmPageState extends State<AddFilmPage> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              controller.selectedDate ??
-                                  'Sene saýlaň',
+                              controller.selectedDate ?? 'Sene saýlaň',
                             ),
                             IconButton(
                               onPressed: _presentDatePicker,
@@ -224,94 +227,12 @@ class _AddFilmPageState extends State<AddFilmPage> {
     controller.clearImage();
   }
 
-  Widget _getMediaWidget() {
-    return SizedBox(
-      width: 200,
-      height: 300,
-      child: controller.pickedImage != null
-          ? _imagePickedByUser(controller.pickedImage)
-          : Container(
-              color: Theme.of(context).cardColor,
-              width: 200,
-              height: 300,
-              child: Icon(
-                Icons.camera_alt,
-                color: Theme.of(context).textTheme.titleMedium!.color,
-              ),
-            ),
-    );
-  }
-
-  Widget _imagePickedByUser(File? image) {
-    if (image != null && image.path.isNotEmpty) {
-      return Image.file(image);
-    } else {
-      return Container(
-        color: Theme.of(context).cardColor,
-        width: 200,
-        height: 300,
-        child: Icon(
-          Icons.camera_alt,
-          color: Theme.of(context).textTheme.titleMedium!.color,
-        ),
-      );
-    }
-  }
-
-  _showPicker(BuildContext context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return SafeArea(
-            child: Wrap(
-              children: [
-                ListTile(
-                  trailing: const Icon(Icons.arrow_forward),
-                  leading: Icon(
-                    Icons.camera,
-                    color: Theme.of(context).iconTheme.color,
-                  ),
-                  title: const Text('Galareyadan saylan'),
-                  onTap: () {
-                    _imageFormGallery();
-                    Navigator.of(context).pop();
-                  },
-                ),
-                ListTile(
-                  trailing: const Icon(Icons.arrow_forward),
-                  leading: Icon(
-                    Icons.camera_alt_rounded,
-                    color: Theme.of(context).iconTheme.color,
-                  ),
-                  title: const Text('Kameradan alyn'),
-                  onTap: () {
-                    _imageFormCamera();
-                    Navigator.of(context).pop();
-                  },
-                )
-              ],
-            ),
-          );
-        });
-  }
-
-  _imageFormGallery() async {
-    var image = await picker.pickImage(source: ImageSource.gallery);
-    controller.setImage(File(image?.path ?? ""));
-  }
-
-  _imageFormCamera() async {
-    var image = await picker.pickImage(source: ImageSource.camera);
-    controller.setImage(File(image?.path ?? ""));
-  }
   void _showToast(String text) {
     Widget toast = ToastWidget(text: text);
-
     fToast!.showToast(
       child: toast,
       gravity: ToastGravity.BOTTOM,
       toastDuration: const Duration(seconds: 2),
     );
   }
-
 }

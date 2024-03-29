@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:movies/core/constants/sizes/app_text_size.dart';
-import 'package:movies/data/models/film_model.dart';
-import 'package:movies/di.dart';
-import 'package:movies/presentation/controller/admin_controller.dart';
 import 'package:movies/presentation/screen/deatils_page/details_page.dart';
 import 'package:movies/presentation/widgets/models/main_card_model.dart';
 import 'package:movies/presentation/widgets/pictures/pictures.dart';
@@ -73,8 +70,6 @@ class AddedFilmsCard extends StatelessWidget {
                         SmallText(
                           'Başlanýan wagty: ${model.startDate} ${model
                               .startHour}',
-
-                          ///formattedDate}',
                           context: context,
                         ),
                         const SizedBox(height: 15.0),

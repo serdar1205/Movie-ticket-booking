@@ -1,5 +1,3 @@
-
-
 class MainModel {
   String? id;
   String? title;

@@ -1,8 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-
-
-
 class CardPicture extends StatelessWidget {
   const CardPicture({super.key, required this.image});
 final  String image;
@@ -31,28 +28,6 @@ final  String image;
            },
          ),
        ),
-
-      // ClipRRect(
-      //   borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-      //   child: Image.file(File(image),
-      //     placeholder: (context, url) => const SizedBox(
-      //       height: 150.0,
-      //       width: 100.0,
-      //       child: LoadingWidget(
-      //         isImage: true,
-      //       ),
-      //     ),
-      //     errorWidget: (context, url, error) => Image.asset(
-      //       'assets/images/noPhoto.png',
-      //       fit: BoxFit.cover,
-      //       height: 150.0,
-      //       width: 100.0,
-      //     ),
-      //     fit: BoxFit.cover,
-      //     height: 150.0,
-      //     width: 100.0,
-      //   ),
-      // ),
     );
   }
 }

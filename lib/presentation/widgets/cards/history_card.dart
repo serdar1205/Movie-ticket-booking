@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../../core/constants/sizes/app_text_size.dart';
 import '../../../data/models/ticket_order_model.dart';
 

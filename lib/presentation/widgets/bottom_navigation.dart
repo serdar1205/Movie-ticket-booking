@@ -4,9 +4,7 @@ import 'package:movies/core/constants/colors/app_colors.dart';
 // ignore: must_be_immutable
 class BottomNavBar extends StatelessWidget {
   BottomNavBar({Key? key,required this.pageIndex, required this.isAdmin, required this.onTap}) : super(key: key);
-
   bool isAdmin;
-
   int pageIndex;
   void Function(int)? onTap;
   final List<String> pageTitles = [
